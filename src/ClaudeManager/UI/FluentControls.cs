@@ -286,10 +286,14 @@ internal sealed class StatusChip : Control
     }
 }
 
-/// <summary>Rounded warning banner with an icon and wrapped text.</summary>
+/// <summary>Rounded warning (or error) banner with an icon and wrapped text.</summary>
 internal sealed class Banner : Control
 {
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] public bool IsError { get; set; }
     int S(int v) => (int)Math.Round(v * DeviceDpi / 96.0);
+
+    Color Back(Theme t) => !IsError ? t.WarningBack : t.Dark ? Color.FromArgb(68, 39, 38) : Color.FromArgb(253, 231, 233);
+    Color Fore(Theme t) => IsError ? (t.Dark ? Color.FromArgb(255, 200, 200) : Color.FromArgb(150, 20, 20)) : t.Dark ? t.Text : Color.FromArgb(80, 55, 0);
 
     public Banner()
     {
@@ -314,9 +318,187 @@ internal sealed class Banner : Control
         g.Clear(Parent?.BackColor ?? t.Background);
         g.SmoothingMode = SmoothingMode.AntiAlias;
         var r = new RectangleF(0.5f, 0.5f, Width - 1.5f, Height - 1.5f);
-        Theme.FillRounded(g, t.WarningBack, r, S(6));
-        TextRenderer.DrawText(g, Glyph.Warning, Fonts.Icon, new Rectangle(S(12), S(10), S(18), S(18)), t.Warning, t.WarningBack, TextFormatFlags.NoPadding);
+        var back = Back(t);
+        Theme.FillRounded(g, back, r, S(6));
+        TextRenderer.DrawText(g, IsError ? Glyph.Error : Glyph.Warning, Fonts.Icon, new Rectangle(S(12), S(10), S(18), S(18)),
+            IsError ? t.Danger : t.Warning, back, TextFormatFlags.NoPadding);
         TextRenderer.DrawText(g, Text, Fonts.Caption, new Rectangle(S(36), S(10), Width - S(46), Height - S(20)),
-            t.Dark ? t.Text : Color.FromArgb(80, 55, 0), t.WarningBack, TextFormatFlags.WordBreak | TextFormatFlags.NoPadding);
+            Fore(t), back, TextFormatFlags.WordBreak | TextFormatFlags.NoPadding);
+    }
+}
+
+/// <summary>
+/// Windows 11-style text box: rounded field, subtle border, accent underline while focused, placeholder.
+/// The real TextBox is hosted inside (so editing, IME and accessibility are standard).
+/// </summary>
+internal sealed class FluentTextBox : Control
+{
+    public TextBox Box { get; } = new() { BorderStyle = BorderStyle.None };
+    bool hover;
+
+    int S(int v) => (int)Math.Round(v * DeviceDpi / 96.0);
+
+    public FluentTextBox()
+    {
+        SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        Box.Font = Fonts.Body;
+        Controls.Add(Box);
+        Box.GotFocus += (_, _) => Invalidate();
+        Box.LostFocus += (_, _) => Invalidate();
+        Box.MouseEnter += (_, _) => { hover = true; Invalidate(); };
+        Box.MouseLeave += (_, _) => { hover = false; Invalidate(); };
+        Cursor = Cursors.IBeam;
+        ApplyTheme();
+    }
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [System.Diagnostics.CodeAnalysis.AllowNull]
+    public override string Text { get => Box.Text; set => Box.Text = value ?? ""; }
+
+    public void ApplyTheme()
+    {
+        var t = Theme.Current;
+        Box.BackColor = FieldColor(t);
+        Box.ForeColor = Box.ReadOnly ? t.TextSecondary : t.Text;
+        Invalidate();
+    }
+
+    Color FieldColor(Theme t) => Box.ReadOnly
+        ? (t.Dark ? Color.FromArgb(39, 39, 39) : Color.FromArgb(246, 246, 246))
+        : Box.Focused ? (t.Dark ? Color.FromArgb(31, 31, 31) : Color.White)
+        : hover ? t.SubtleHover : t.Subtle;
+
+    protected override void OnMouseEnter(EventArgs e) { hover = true; Invalidate(); base.OnMouseEnter(e); }
+    protected override void OnMouseLeave(EventArgs e) { hover = false; Invalidate(); base.OnMouseLeave(e); }
+    protected override void OnClick(EventArgs e) { Box.Focus(); base.OnClick(e); }
+
+    protected override void OnLayout(LayoutEventArgs e)
+    {
+        base.OnLayout(e);
+        int h = Box.PreferredHeight;
+        Box.Bounds = new Rectangle(S(10), (Height - h) / 2 + S(1), Width - S(20), h);
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        var t = Theme.Current;
+        var g = e.Graphics;
+        g.Clear(Parent?.BackColor ?? t.Background);
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        var fill = FieldColor(t);
+        if (Box.BackColor != fill) Box.BackColor = fill;
+        var r = new RectangleF(0.5f, 0.5f, Width - 1.5f, Height - 1.5f);
+        Theme.FillRounded(g, fill, r, S(5));
+        Theme.StrokeRounded(g, t.Dark ? Color.FromArgb(70, 70, 70) : Color.FromArgb(222, 222, 222), r, S(5));
+        if (Box.Focused && !Box.ReadOnly)
+        {
+            // Accent underline, clipped to the rounded field.
+            using var clip = Theme.Rounded(r, S(5));
+            g.SetClip(clip);
+            using var b = new SolidBrush(t.Accent);
+            g.FillRectangle(b, 0, Height - S(2), Width, S(2));
+            g.ResetClip();
+        }
+    }
+}
+
+/// <summary>Round color swatch (selected: ring + check), or the "+" custom-color button.</summary>
+internal sealed class SwatchButton : Button
+{
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] public Color Swatch { get; set; }
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] public bool Selected { get; set; }
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] public bool IsAdd { get; set; }
+    bool hover;
+
+    int S(int v) => (int)Math.Round(v * DeviceDpi / 96.0);
+
+    public SwatchButton()
+    {
+        SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        FlatStyle = FlatStyle.Flat;
+        FlatAppearance.BorderSize = 0;
+        Cursor = Cursors.Hand;
+    }
+
+    protected override void OnMouseEnter(EventArgs e) { hover = true; Invalidate(); base.OnMouseEnter(e); }
+    protected override void OnMouseLeave(EventArgs e) { hover = false; Invalidate(); base.OnMouseLeave(e); }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        var t = Theme.Current;
+        var g = e.Graphics;
+        g.Clear(Parent?.BackColor ?? t.Background);
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        float inset = S(4);
+        var r = new RectangleF(inset, inset, Width - 2 * inset - 1, Height - 2 * inset - 1);
+        if (IsAdd)
+        {
+            using var pen = new Pen(hover ? t.Accent : t.TextTertiary, 1.2f) { DashStyle = DashStyle.Dash };
+            g.DrawEllipse(pen, r);
+            TextRenderer.DrawText(g, Glyph.Add, Fonts.IconSmall, ClientRectangle, hover ? t.Accent : t.TextSecondary,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+        }
+        else
+        {
+            using (var b = new SolidBrush(Swatch)) g.FillEllipse(b, r);
+            if (Selected || hover)
+            {
+                using var ring = new Pen(Selected ? t.Text : t.TextTertiary, Selected ? 2f : 1.2f);
+                g.DrawEllipse(ring, 1.5f, 1.5f, Width - 4f, Height - 4f);
+            }
+            if (Selected)
+            {
+                var lum = (0.299 * Swatch.R + 0.587 * Swatch.G + 0.114 * Swatch.B) / 255.0;
+                TextRenderer.DrawText(g, Glyph.Check, Fonts.IconSmall, ClientRectangle, lum > 0.6 ? Color.Black : Color.White,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            }
+        }
+        if (Focused && ShowFocusCues)
+        {
+            using var focus = new Pen(t.Accent, 1.5f) { DashStyle = DashStyle.Dot };
+            g.DrawEllipse(focus, 0.75f, 0.75f, Width - 2.5f, Height - 2.5f);
+        }
+    }
+}
+
+/// <summary>Square icon choice (selected: accent border and tint).</summary>
+internal sealed class IconTile : Button
+{
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] public Bitmap? Picture { get; set; }
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] public bool Selected { get; set; }
+    bool hover;
+
+    int S(int v) => (int)Math.Round(v * DeviceDpi / 96.0);
+
+    public IconTile()
+    {
+        SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        FlatStyle = FlatStyle.Flat;
+        FlatAppearance.BorderSize = 0;
+        Cursor = Cursors.Hand;
+    }
+
+    protected override void OnMouseEnter(EventArgs e) { hover = true; Invalidate(); base.OnMouseEnter(e); }
+    protected override void OnMouseLeave(EventArgs e) { hover = false; Invalidate(); base.OnMouseLeave(e); }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        var t = Theme.Current;
+        var g = e.Graphics;
+        g.Clear(Parent?.BackColor ?? t.Background);
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+        var r = new RectangleF(0.5f, 0.5f, Width - 1.5f, Height - 1.5f);
+        var fill = Selected ? Theme.Mix(t.Card, t.Accent, t.Dark ? 0.22 : 0.12) : hover ? t.SubtleHover : t.Card;
+        Theme.FillRounded(g, fill, r, S(7));
+        if (Selected) Theme.StrokeRounded(g, t.Accent, new RectangleF(1, 1, Width - 2.5f, Height - 2.5f), S(7), 2f);
+        else Theme.StrokeRounded(g, t.CardBorder, r, S(7));
+        if (Picture != null)
+        {
+            int s = S(24);
+            g.DrawImage(Picture, (Width - s) / 2, (Height - s) / 2, s, s);
+        }
+        if (Focused && ShowFocusCues)
+            Theme.StrokeRounded(g, t.Text, new RectangleF(2.5f, 2.5f, Width - 6f, Height - 6f), S(5), 1f);
     }
 }
