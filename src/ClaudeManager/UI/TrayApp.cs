@@ -79,6 +79,8 @@ internal sealed class TrayApp : ApplicationContext
 
     void TogglePanel()
     {
+        // Clicking the tray icon first deactivates the flyout (which hides it); don't reopen it right away.
+        if (DateTime.UtcNow - panel.LastAutoHideUtc < TimeSpan.FromMilliseconds(400)) return;
         if (panel.Visible && Form.ActiveForm == panel) panel.Hide();
         else ShowPanel();
     }
@@ -87,6 +89,7 @@ internal sealed class TrayApp : ApplicationContext
     {
         var m = tray.ContextMenuStrip!;
         MenuUtil.Clear(m.Items);
+        FluentMenuRenderer.Apply(m); // follows light/dark mode
         foreach (var p in State.Profiles)
         {
             var mem = Usage?.ByProfile.TryGetValue(p.Id, out var u) == true ? $"   ({UsageMonitor.Format(u!.TotalBytes)})" : "";

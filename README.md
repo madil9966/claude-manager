@@ -67,6 +67,8 @@ MIT, see [LICENSE](LICENSE). Contributions and bug reports are welcome at [Issue
 
 ## Use
 
+Click the tray icon to open the panel. It follows Windows light/dark mode and your accent color. Each profile is a card showing its icon, whether it's running and how much memory it uses, with **Desktop** and **Terminal** buttons. The panel hides when you click elsewhere. Pin it (📌 in the header) to keep it open.
+
 1. On first run, choose names (Work and Personal by default), where the folders go, and whether to back up first.
 2. **Desktop** opens an isolated Claude window. A profile's first launch walks you through sign-in. Other Claude windows can stay open, because Claude Manager sends the sign-in link to the profile being set up. Still sign in to one new profile at a time.
 3. **Terminal** opens Windows Terminal (cmd.exe) in a project folder, with `CLAUDE_CONFIG_DIR` set for that tab only. Recent folders are remembered. Type `/status` to confirm the account.
