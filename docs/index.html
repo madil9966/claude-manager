@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Claude Manager: Run Multiple Claude Accounts at Once (Windows &amp; macOS)</title>
-  <meta name="description" content="Free, open-source account switcher for Claude. Use several Claude accounts side by side, like Work and Personal, in the Claude desktop app and Claude Code, without logging out. Windows and macOS.">
-  <meta name="keywords" content="multiple Claude accounts, Claude account switcher, switch Claude accounts, two Claude accounts at the same time, Claude Code multiple accounts, Claude desktop multiple accounts, CLAUDE_CONFIG_DIR, Claude work and personal account">
+  <title>Run Multiple Claude Accounts on One Machine: Claude Manager (Windows &amp; macOS)</title>
+  <meta name="description" content="Run multiple Claude accounts on one machine. A free, open-source account switcher for Claude: use Work and Personal accounts side by side in the Claude desktop app and Claude Code, without logging out. Windows and macOS.">
+  <meta name="keywords" content="run multiple Claude accounts on one machine, multiple Claude accounts on one computer, multiple Claude accounts, Claude account switcher, switch Claude accounts, two Claude accounts at the same time, Claude Code multiple accounts, Claude desktop multiple accounts, CLAUDE_CONFIG_DIR, Claude work and personal account">
   <meta name="author" content="Muhammad Adil">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://madil9966.github.io/claude-manager/">
@@ -15,7 +15,7 @@
   <!-- Open Graph / social previews -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Claude Manager">
-  <meta property="og:title" content="Claude Manager: Run Multiple Claude Accounts at Once">
+  <meta property="og:title" content="Claude Manager: Run Multiple Claude Accounts on One Machine">
   <meta property="og:description" content="Use Work and Personal Claude accounts side by side in the Claude desktop app and Claude Code. Free and open source, for Windows and macOS.">
   <meta property="og:url" content="https://madil9966.github.io/claude-manager/">
   <meta property="og:image" content="https://madil9966.github.io/claude-manager/social-preview.png">
@@ -52,6 +52,8 @@
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
+      { "@type": "Question", "name": "Can I run multiple Claude accounts on one machine?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Claude Manager gives each Claude account its own profile on the same computer, so several accounts run at the same time on one Windows PC or Mac, in the Claude desktop app and Claude Code." } },
       { "@type": "Question", "name": "How do I use two Claude accounts at the same time?",
         "acceptedAnswer": { "@type": "Answer", "text": "Install Claude Manager, add a profile for your second account and click Desktop. A separate Claude window opens with its own login, so both accounts can be open side by side." } },
       { "@type": "Question", "name": "How do I switch Claude accounts without logging out?",
@@ -105,7 +107,7 @@
   <div class="wrap">
     <header>
       <img class="logo" src="app-256.png" alt="Claude Manager logo" width="72" height="72">
-      <h1>Run multiple Claude accounts at the same time</h1>
+      <h1>Run multiple Claude accounts on one machine</h1>
       <p class="lead">Claude Manager is a free, open-source <strong>account switcher for Claude</strong>. Use <strong>Work and Personal</strong> accounts side by side in the <strong>Claude desktop app</strong> and <strong>Claude Code</strong>, without logging out and back in.</p>
       <span class="tag">Windows 10/11 · macOS 12+ · MIT · unofficial</span>
       <div class="cta">
@@ -155,7 +157,8 @@
 
     <section>
       <h2>Frequently asked questions</h2>
-      <details open><summary>How do I switch Claude accounts without logging out?</summary><p>Give each account its own profile. Every profile stays signed in, so switching is just clicking Desktop on another profile, and both windows can stay open.</p></details>
+      <details open><summary>Can I run multiple Claude accounts on one machine?</summary><p>Yes. Each account gets its own profile on the same computer, so work and personal accounts (or more) run at the same time on one Windows PC or Mac, each signed in separately.</p></details>
+      <details><summary>How do I switch Claude accounts without logging out?</summary><p>Give each account its own profile. Every profile stays signed in, so switching is just clicking Desktop on another profile, and both windows can stay open.</p></details>
       <details><summary>Can Claude Code use multiple accounts?</summary><p>Yes. Each profile's Terminal button starts Claude Code with its own <code>CLAUDE_CONFIG_DIR</code>. Claude Code 2.1.140 or newer is required.</p></details>
       <details><summary>Does Google sign-in work for the second account?</summary><p>On Windows, yes: sign-in links are routed to the profile being set up. On macOS, quit other Claude windows during a profile's first sign-in.</p></details>
       <details><summary>Is it safe? Does it read my login?</summary><p>No. It only chooses which folder each Claude window uses. Logins, tokens and chats are never read, copied or sent, and Claude itself isn't modified.</p></details>

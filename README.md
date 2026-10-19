@@ -1,11 +1,11 @@
-# Claude Manager: run multiple Claude accounts at the same time (Windows & macOS)
+# Claude Manager: run multiple Claude accounts on one machine (Windows & macOS)
 
 [![Latest release](https://img.shields.io/github/v/release/madil9966/claude-manager?label=download&color=2F80ED)](https://github.com/madil9966/claude-manager/releases/latest)
 [![Platforms](https://img.shields.io/badge/platform-Windows%2010%2F11%20%7C%20macOS%2012%2B-555)](#install)
 [![Build](https://github.com/madil9966/claude-manager/actions/workflows/release.yml/badge.svg)](https://github.com/madil9966/claude-manager/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-27AE60)](LICENSE)
 
-**Claude Manager is a free, open-source account switcher for Claude.** It lets you use **several Claude accounts side by side**, for example **Work and Personal**, in both the **Claude desktop app** and **Claude Code (CLI)**. No more logging out and back in to switch accounts.
+**Claude Manager is a free, open-source account switcher for Claude.** It lets you **run multiple Claude accounts on one machine at the same time**, for example **Work and Personal** on the same PC or Mac, in both the **Claude desktop app** and **Claude Code (CLI)**. No more logging out and back in to switch accounts.
 
 Each account (a *profile*) gets its own Claude window and its own Claude Code terminal, so you can have a work account and a personal account open at once. On Windows, sign-in links, including **Google sign-in**, are sent to the right profile.
 
@@ -68,6 +68,9 @@ It runs in the **menu bar** (no Dock icon). No .NET install is needed.
 From then on, every profile opens straight into its own account, side by side with the others.
 
 ## FAQ
+
+**Can I run multiple Claude accounts on one machine?**
+Yes. That's what Claude Manager is for. Every account gets its own profile folder on the same computer, so a work account and a personal account (or more) can run at the same time on one Windows PC or Mac, each signed in separately.
 
 **How do I switch between Claude accounts without logging out?**
 Create a profile per account in Claude Manager. Each one has its own folder, so each stays signed in. Switching means clicking **Desktop** on another profile, and both windows can stay open.
