@@ -1,0 +1,13 @@
+<Project>
+  <!-- Shared by Claude Manager and its installer. Change the version here only. -->
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <Product>Claude Manager</Product>
+    <Company>Claude Manager community project (unofficial)</Company>
+    <Authors>Muhammad Adil</Authors>
+    <Copyright>Copyright © 2026 Muhammad Adil. MIT License.</Copyright>
+    <Description>Unofficial community utility for running several Claude accounts side by side. Not affiliated with or endorsed by Anthropic.</Description>
+    <NeutralLanguage>en</NeutralLanguage>
+    <ApplicationIcon>$(MSBuildThisFileDirectory)..\assets\app.ico</ApplicationIcon>
+  </PropertyGroup>
+</Project>

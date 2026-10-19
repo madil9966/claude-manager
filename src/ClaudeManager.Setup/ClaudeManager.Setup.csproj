@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Installer for Claude Manager. Build it with tools\build-installer.ps1, which first publishes
+    ClaudeManager.exe into $(PayloadDir) and then embeds it here.
+    Version, product, company and icon come from ..\Directory.Build.props.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ClaudeManager-Setup</AssemblyName>
+    <RootNamespace>ClaudeManager.Setup</RootNamespace>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyTitle>Claude Manager Setup (unofficial)</AssemblyTitle>
+    <PayloadDir Condition="'$(PayloadDir)' == ''">$(MSBuildThisFileDirectory)..\..\artifacts\payload\</PayloadDir>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(PayloadDir)ClaudeManager.exe')">
+    <EmbeddedResource Include="$(PayloadDir)ClaudeManager.exe" LogicalName="payload/ClaudeManager.exe" />
+    <EmbeddedResource Include="$(PayloadDir)LICENSE.txt" LogicalName="payload/LICENSE.txt" />
+    <EmbeddedResource Include="$(PayloadDir)README.md" LogicalName="payload/README.md" />
+  </ItemGroup>
+
+  <!-- A plain "dotnet build" of the solution still works without a payload (Setup then reports it's damaged).
+       The build script sets RequirePayload=true so a real installer can never ship empty. -->
+  <Target Name="CheckPayload" BeforeTargets="BeforeBuild" Condition="!Exists('$(PayloadDir)ClaudeManager.exe')">
+    <Error Condition="'$(RequirePayload)' == 'true'" Text="Installer payload missing ($(PayloadDir)ClaudeManager.exe)." />
+    <Warning Condition="'$(RequirePayload)' != 'true'" Text="No installer payload; this Setup build can't install. Use tools\build-installer.ps1." />
+  </Target>
+
+</Project>
