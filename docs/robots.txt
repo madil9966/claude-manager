@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://madil9966.github.io/claude-manager/sitemap.xml

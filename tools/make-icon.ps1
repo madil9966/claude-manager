@@ -36,3 +36,10 @@ for ($i = 0; $i -lt $sizes.Count; $i++) {
 foreach ($p in $pngs) { $w.Write($p) }
 $w.Close()
 "Wrote $out ($((Get-Item $out).Length) bytes, sizes $($sizes -join ', '))"
+
+# PNGs for macOS: app icon (window/about), menu bar icon, and a 1024 px source for the .icns (built on macOS).
+foreach ($pair in @(@(256, 'app-256.png'), @(1024, 'app-1024.png'), @(44, 'tray-mac.png'))) {
+  $file = Join-Path (Split-Path $out) $pair[1]
+  [IO.File]::WriteAllBytes($file, (Render $pair[0]))
+  "Wrote $file"
+}

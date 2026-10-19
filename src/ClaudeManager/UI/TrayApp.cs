@@ -30,7 +30,7 @@ internal sealed class TrayApp : ApplicationContext
 
     public TrayApp(string[] args)
     {
-        State = ProfileStore.Load();
+        State = Demo.On ? Demo.State() : ProfileStore.Load();
         var icon = IconFactory.AppIcon();
         panel = new MainPanel(this) { Icon = icon };
         _ = panel.Handle; // needed for BeginInvoke from background threads
@@ -41,6 +41,15 @@ internal sealed class TrayApp : ApplicationContext
 
         Ipc.StartServer(a => panel.BeginInvoke(() => HandleCommand(a)), cts.Token);
         StartDetection();
+
+        if (Demo.On)
+        {
+            // Screenshots only: sample data, no routing, monitoring, repair or saving.
+            Log.Info("Demo mode: sample profiles, nothing is saved");
+            profileSnapshot = State.Profiles.ToArray();
+            panel.BeginInvoke(() => { ApplyUsage(Demo.Usage()); HandleCommand(args, startup: true); });
+            return;
+        }
 
         // Claude re-registers claude:// for itself on every start, so keep re-applying the routing.
         EnsureLinkRouting();
@@ -69,6 +78,7 @@ internal sealed class TrayApp : ApplicationContext
 
     void Save()
     {
+        if (Demo.On) return; // demo data is never written
         profileSnapshot = State.Profiles.ToArray();
         forceInstanceRefresh = true;
         try { ProfileStore.Save(State); }
@@ -505,7 +515,7 @@ internal sealed class TrayApp : ApplicationContext
     /// <summary>Points claude:// at Claude Manager (any thread). Saves Claude's own command for restore.</summary>
     void EnsureLinkRouting()
     {
-        if (!State.RouteLinks) return;
+        if (!State.RouteLinks || Demo.On) return;
         lock (routeGate)
         {
             string? replaced;

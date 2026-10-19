@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Manager: Run Multiple Claude Accounts at Once (Windows &amp; macOS)</title>
+  <meta name="description" content="Free, open-source account switcher for Claude. Use several Claude accounts side by side, like Work and Personal, in the Claude desktop app and Claude Code, without logging out. Windows and macOS.">
+  <meta name="keywords" content="multiple Claude accounts, Claude account switcher, switch Claude accounts, two Claude accounts at the same time, Claude Code multiple accounts, Claude desktop multiple accounts, CLAUDE_CONFIG_DIR, Claude work and personal account">
+  <meta name="author" content="Muhammad Adil">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://madil9966.github.io/claude-manager/">
+  <meta name="theme-color" content="#2F80ED">
+  <link rel="icon" type="image/png" href="app-256.png">
+
+  <!-- Open Graph / social previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Claude Manager">
+  <meta property="og:title" content="Claude Manager: Run Multiple Claude Accounts at Once">
+  <meta property="og:description" content="Use Work and Personal Claude accounts side by side in the Claude desktop app and Claude Code. Free and open source, for Windows and macOS.">
+  <meta property="og:url" content="https://madil9966.github.io/claude-manager/">
+  <meta property="og:image" content="https://madil9966.github.io/claude-manager/social-preview.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta property="og:image:alt" content="Claude Manager: run multiple Claude accounts side by side">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Claude Manager: Run Multiple Claude Accounts at Once">
+  <meta name="twitter:description" content="Free, open-source account switcher for the Claude desktop app and Claude Code. Windows and macOS.">
+  <meta name="twitter:image" content="https://madil9966.github.io/claude-manager/social-preview.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Claude Manager",
+    "alternateName": "Claude account switcher",
+    "description": "Free, open-source utility to run multiple Claude accounts side by side in the Claude desktop app and Claude Code, on Windows and macOS. Unofficial; not affiliated with Anthropic.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Windows 10, Windows 11, macOS 12+",
+    "url": "https://madil9966.github.io/claude-manager/",
+    "downloadUrl": "https://github.com/madil9966/claude-manager/releases/latest",
+    "softwareVersion": "1.1.0",
+    "license": "https://opensource.org/licenses/MIT",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "Muhammad Adil", "url": "https://github.com/madil9966" },
+    "codeRepository": "https://github.com/madil9966/claude-manager",
+    "screenshot": "https://madil9966.github.io/claude-manager/screenshots/windows-panel-light.png"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "How do I use two Claude accounts at the same time?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Install Claude Manager, add a profile for your second account and click Desktop. A separate Claude window opens with its own login, so both accounts can be open side by side." } },
+      { "@type": "Question", "name": "How do I switch Claude accounts without logging out?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Give each account its own profile in Claude Manager. Every profile stays signed in, so switching is just clicking Desktop on another profile." } },
+      { "@type": "Question", "name": "Can Claude Code use multiple accounts?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Each profile's Terminal button starts Claude Code with its own CLAUDE_CONFIG_DIR in that terminal only. Claude Code 2.1.140 or newer is required." } },
+      { "@type": "Question", "name": "Does Google sign-in work for the second account?",
+        "acceptedAnswer": { "@type": "Answer", "text": "On Windows, Claude Manager routes claude:// sign-in links, including Google sign-in, to the profile being set up. On macOS, quit other Claude windows during a profile's first sign-in." } },
+      { "@type": "Question", "name": "Is Claude Manager made by Anthropic?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. It is an unofficial, free, open-source community utility and is not affiliated with or endorsed by Anthropic." } }
+    ]
+  }
+  </script>
+
+  <style>
+    :root { --bg:#f5f5f7; --card:#fff; --text:#1a1a1a; --muted:#5f5f66; --border:#e4e4e7; --accent:#2F80ED; --accent2:#D97757; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#141416; --card:#1f1f22; --text:#f2f2f2; --muted:#b4b4bb; --border:#2e2e33; } }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); }
+    a { color:var(--accent); }
+    .wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
+    header { padding:56px 0 24px; text-align:center; }
+    .logo { width:72px; height:72px; }
+    h1 { font-size:clamp(28px, 4.4vw, 46px); line-height:1.15; margin:14px 0 12px; letter-spacing:-0.02em; }
+    .lead { font-size:19px; color:var(--muted); max-width:760px; margin:0 auto; }
+    .tag { display:inline-block; font-size:13px; border:1px solid var(--border); border-radius:999px; padding:2px 10px; color:var(--muted); margin-top:14px; }
+    .cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:28px 0 8px; }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:10px; font-weight:600; text-decoration:none; border:1px solid var(--border); background:var(--card); color:var(--text); }
+    .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .note { font-size:13px; color:var(--muted); text-align:center; }
+    .shots { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin:36px 0; align-items:start; }
+    figure { margin:0; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; }
+    figure img { width:100%; height:auto; border-radius:8px; display:block; }
+    figcaption { font-size:14px; color:var(--muted); margin-top:8px; text-align:center; }
+    section { margin:48px 0; }
+    h2 { font-size:28px; letter-spacing:-0.01em; margin-bottom:12px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; }
+    .card h3 { margin:0 0 6px; font-size:17px; }
+    .card p { margin:0; color:var(--muted); font-size:15px; }
+    ol li { margin:6px 0; }
+    details { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin:10px 0; }
+    summary { font-weight:600; cursor:pointer; }
+    details p { color:var(--muted); margin:10px 0 0; }
+    code { background:rgba(127,127,127,.15); padding:1px 6px; border-radius:6px; font-size:.92em; }
+    .disclaimer { border-left:4px solid var(--accent2); background:var(--card); padding:14px 18px; border-radius:8px; color:var(--muted); font-size:14px; }
+    footer { padding:32px 0 48px; color:var(--muted); font-size:14px; text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img class="logo" src="app-256.png" alt="Claude Manager logo" width="72" height="72">
+      <h1>Run multiple Claude accounts at the same time</h1>
+      <p class="lead">Claude Manager is a free, open-source <strong>account switcher for Claude</strong>. Use <strong>Work and Personal</strong> accounts side by side in the <strong>Claude desktop app</strong> and <strong>Claude Code</strong>, without logging out and back in.</p>
+      <span class="tag">Windows 10/11 · macOS 12+ · MIT · unofficial</span>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/madil9966/claude-manager/releases/latest">⬇ Download for Windows</a>
+        <a class="btn primary" href="https://github.com/madil9966/claude-manager/releases/latest">⬇ Download for macOS</a>
+        <a class="btn" href="https://github.com/madil9966/claude-manager">★ View on GitHub</a>
+      </div>
+      <p class="note">Windows: installer, no admin rights needed. macOS: DMG for Apple Silicon and Intel.</p>
+    </header>
+
+    <div class="shots">
+      <figure>
+        <img src="screenshots/windows-panel-light.png" alt="Claude Manager on Windows: one card per Claude account with Desktop and Terminal buttons" loading="lazy">
+        <figcaption>Windows: one card per account</figcaption>
+      </figure>
+      <figure>
+        <img src="screenshots/windows-panel-dark.png" alt="Claude Manager in dark mode showing running Claude accounts and memory use" loading="lazy">
+        <figcaption>Follows light and dark mode</figcaption>
+      </figure>
+      <figure>
+        <img src="screenshots/macos-main-light.png" alt="Claude Manager for macOS menu bar app with multiple Claude profiles" loading="lazy">
+        <figcaption>macOS menu bar app</figcaption>
+      </figure>
+    </div>
+
+    <section>
+      <h2>Why Claude Manager?</h2>
+      <div class="grid">
+        <div class="card"><h3>Several accounts at once</h3><p>Each profile opens its own Claude desktop window with its own login, chats and settings.</p></div>
+        <div class="card"><h3>Claude Code per account</h3><p>The Terminal button starts Claude Code with that profile's <code>CLAUDE_CONFIG_DIR</code>, in that window only.</p></div>
+        <div class="card"><h3>Google sign-in works</h3><p>On Windows, <code>claude://</code> sign-in links go to the profile you're setting up, not the wrong window.</p></div>
+        <div class="card"><h3>Your setup stays untouched</h3><p><code>~/.claude</code>, <code>~/.claude.json</code> and Claude's app data are never written. Your current account becomes the Default profile.</p></div>
+        <div class="card"><h3>Private</h3><p>No telemetry, no accounts. It never reads or sends your logins, tokens or chats.</p></div>
+        <div class="card"><h3>Free &amp; open source</h3><p>MIT licensed. Self-tests for every safety rule run on each release.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>How to use two Claude accounts at the same time</h2>
+      <ol>
+        <li>Install Claude Manager and open it. Your current Claude setup appears as the <strong>Default</strong> profile.</li>
+        <li>Click <strong>Add profile</strong> and name it, for example <em>Work</em>.</li>
+        <li>Click <strong>Desktop</strong>: a new Claude window opens. Sign in with your other account (Google sign-in works).</li>
+        <li>Click <strong>Terminal</strong> to use Claude Code with that account, then type <code>/login</code> once.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Frequently asked questions</h2>
+      <details open><summary>How do I switch Claude accounts without logging out?</summary><p>Give each account its own profile. Every profile stays signed in, so switching is just clicking Desktop on another profile, and both windows can stay open.</p></details>
+      <details><summary>Can Claude Code use multiple accounts?</summary><p>Yes. Each profile's Terminal button starts Claude Code with its own <code>CLAUDE_CONFIG_DIR</code>. Claude Code 2.1.140 or newer is required.</p></details>
+      <details><summary>Does Google sign-in work for the second account?</summary><p>On Windows, yes: sign-in links are routed to the profile being set up. On macOS, quit other Claude windows during a profile's first sign-in.</p></details>
+      <details><summary>Is it safe? Does it read my login?</summary><p>No. It only chooses which folder each Claude window uses. Logins, tokens and chats are never read, copied or sent, and Claude itself isn't modified.</p></details>
+      <details><summary>Is this an official Anthropic app?</summary><p>No. It's an unofficial community utility, not endorsed by Anthropic.</p></details>
+    </section>
+
+    <p class="disclaimer"><strong>Unofficial community tool.</strong> Claude Manager is not affiliated with, endorsed by, sponsored by, or supported by Anthropic. "Claude" is a trademark of Anthropic, PBC, used here only to describe the app this tool works with. It's meant for one person's own accounts and doesn't bypass usage limits.</p>
+
+    <footer>
+      © 2026 Muhammad Adil · <a href="https://github.com/madil9966/claude-manager">Source on GitHub</a> · <a href="https://github.com/madil9966/claude-manager/releases/latest">Downloads</a> · <a href="https://github.com/madil9966/claude-manager/issues">Report an issue</a>
+    </footer>
+  </div>
+</body>
+</html>

@@ -78,7 +78,7 @@ public static class ProfileService
     /// <summary>Creates missing profile folders (re-validated every time) and records which ones the app created.</summary>
     public static void EnsureFolders(Profile p)
     {
-        if (p.IsDefault) return;
+        if (p.IsDefault || Demo.On) return; // demo profiles are never created on disk
         foreach (var dir in new[] { p.DesktopDataDir, p.CliConfigDir })
         {
             if (string.IsNullOrEmpty(dir)) throw new InvalidOperationException($"Profile '{p.Name}' has no folder set.");

@@ -1,0 +1,89 @@
+# Builds Claude Manager for Windows and macOS, runs the self-tests on each, and publishes a GitHub release
+# when a version tag (v1.2.3) is pushed. Pushes to main only build and test.
+name: Build and release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths-ignore: ['docs/**', '*.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Windows (installer + portable)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Build, self-test and package
+        shell: pwsh
+        run: ./tools/build-installer.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            dist/*.exe
+            dist/*.zip
+
+  macos:
+    name: macOS (Apple Silicon + Intel)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Build, sign (ad-hoc), self-test and package
+        run: bash tools/build-macos.sh
+      - name: Screenshots with sample data
+        continue-on-error: true
+        run: |
+          CLAUDE_MANAGER_DEMO=1 "artifacts/mac/arm64/Claude Manager.app/Contents/MacOS/ClaudeManager" --screenshot "$PWD/artifacts/mac/screenshots" &
+          PID=$!
+          for i in $(seq 1 60); do kill -0 $PID 2>/dev/null || break; sleep 1; done
+          kill $PID 2>/dev/null || true
+          ls -l artifacts/mac/screenshots || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: dist-mac/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-screenshots
+          path: artifacts/mac/screenshots/*.png
+          if-no-files-found: ignore
+
+  release:
+    name: Publish release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows
+          path: files
+      - uses: actions/download-artifact@v4
+        with:
+          name: macos
+          path: files
+      - name: Checksums
+        run: cd files && sha256sum * | tee SHA256SUMS.txt
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          NOTES="docs/release-notes/${TAG}.md"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" files/* --clobber
+          else
+            gh release create "$TAG" files/* --title "Claude Manager ${TAG#v} (unofficial)" --notes-file "$NOTES" --latest
+          fi

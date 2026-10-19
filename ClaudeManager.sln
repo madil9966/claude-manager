@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaudeManager", "src\Claude
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaudeManager.Setup", "src\ClaudeManager.Setup\ClaudeManager.Setup.csproj", "{191F4F77-299B-4C62-988F-9DC8CF1F4686}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaudeManager.Mac", "src\ClaudeManager.Mac\ClaudeManager.Mac.csproj", "{C8F8509E-727D-4821-9D62-D0D84C485E8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,18 @@ Global
 		{191F4F77-299B-4C62-988F-9DC8CF1F4686}.Release|x64.Build.0 = Release|Any CPU
 		{191F4F77-299B-4C62-988F-9DC8CF1F4686}.Release|x86.ActiveCfg = Release|Any CPU
 		{191F4F77-299B-4C62-988F-9DC8CF1F4686}.Release|x86.Build.0 = Release|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Debug|x64.Build.0 = Debug|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Debug|x86.Build.0 = Debug|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Release|x64.ActiveCfg = Release|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Release|x64.Build.0 = Release|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Release|x86.ActiveCfg = Release|Any CPU
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,5 +64,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{18FE85AE-A552-42AE-8D90-B51ED73F3991} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{191F4F77-299B-4C62-988F-9DC8CF1F4686} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{C8F8509E-727D-4821-9D62-D0D84C485E8A} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

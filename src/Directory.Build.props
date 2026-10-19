@@ -1,7 +1,7 @@
 <Project>
   <!-- Shared by Claude Manager and its installer. Change the version here only. -->
   <PropertyGroup>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Product>Claude Manager</Product>
     <Company>Claude Manager community project (unofficial)</Company>
     <Authors>Muhammad Adil</Authors>
